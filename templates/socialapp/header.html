@@ -1,0 +1,104 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+
+		<title>Friend Finder </title>
+
+    <!-- Stylesheets
+    ================================================= -->
+        <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+		<link rel="stylesheet" href="{% static "css/style.css" %}" />
+		<link rel="stylesheet" href="{% static "css/ionicons.min.css" %}" />
+    	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+    	<!--Google Font-->
+    	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i,700,700i" rel="stylesheet">
+
+    <!--for-js-link-->
+
+    <script src="{% static "js/jquery-3.1.1.min.js" %}"></script>
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
+    <script src="{% static "js/jquery.sticky-kit.min.js" %}"></script>
+    <script src="{% static "js/jquery.scrollbar.min.js" %}"></script>
+    <script src="{% static "js/script.js" %}"></script>
+    <script src="{% static "js/custom.js" %}"></script>
+
+
+
+
+
+
+    <!--Favicon-->
+    <link rel="shortcut icon" type="image/png" href="{% static "images/fav.png" %}"/>
+	</head>
+	<body>
+
+    <!-- Header
+    ================================================= -->
+    {% if user.is_authenticated %}
+
+		<header id="header-inverse">
+      <nav id="myHeader" class="navbar navbar-default  menu">
+        <div class="container">
+
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index-register.html"><img src="{% static "images/logo.png" %}" alt="logo" /></a>
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right main-menu">
+              <li class="dropdown">
+                <a href="{% url 'socialapp:index' %}" class="dropdown-toggle"  role="button" aria-haspopup="true" aria-expanded="false">Home </a>
+
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Newsfeed <span><img src="{% static "images/down-arrow.png" %}" alt="" /></span></a>
+                  <ul class="dropdown-menu newsfeed-home">
+                    <li><a href="{% url 'socialapp:newsfeed' %}">Newsfeed</a></li>
+
+                    <li><a href="{% url 'socialapp:newsfeed_friends' %}">My friends</a></li>
+                    <li><a href="{% url 'socialapp:newsfeed_messages' %}">Chatroom</a></li>
+
+                  </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Timeline <span><img src="{% static "images/down-arrow.png" %}" alt="" /></span></a>
+                <ul class="dropdown-menu login">
+
+                  <li><a href="{% url 'socialapp:timeline_about' %}">Timeline About</a></li>
+
+
+                  <li><a href="{% url 'socialapp:edit_profile_basic' %}">Edit: Basic Info</a></li>
+
+                </ul>
+              </li>
+
+               <li class="dropdown"><a href="{% url 'socialapp:404' %}">404</a></li>
+
+               <li class="dropdown"><a href="{% url 'socialapp:user_logout' %}">Logout</a></li>
+
+            </ul>
+            <form class="navbar-form navbar-right hidden-sm">
+              <div class="form-group">
+                <i class="icon fa fa-search"></i>
+                <input type="text" class="form-control" placeholder="Search friends, photos, videos">
+              </div>
+            </form>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container -->
+      </nav>
+    </header>
+    <!--Header End-->
+    {% endif %}
+    {% block body %}{% endblock %}
+
+

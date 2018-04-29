@@ -1,0 +1,23 @@
+{% extends 'socialapp/header.html' %}
+{% block body %}
+<div id="lp-register">
+    	<div class="container wrapper">
+        <div class="row">
+        	<div class="col-sm-5">
+            <div class="intro-texts">
+            	<h1 class="text-white">Make Cool Friends !!!</h1>
+            	<p>Friend Finder is a social network template that can be used to connect people. The template offers Landing pages, News Feed, Image/Video Feed, Chat Box, Timeline and lot more. <br /> <br />Why are you waiting for? Buy it now.</p>
+              <a href="{% url 'socialapp:register' %}" class="btn btn-primary">Register</a>
+              <a href="{% url 'socialapp:user_login' %}" class="btn btn-primary">Login</a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+
+  </body>
+</html>
+{% endblock %}

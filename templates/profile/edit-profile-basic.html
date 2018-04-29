@@ -1,0 +1,147 @@
+{% extends 'socialapp/header.html' %}
+{% load staticfiles %}
+{% block body %}
+<div class="container">
+
+      <!-- Timeline
+      ================================================= -->
+      <div class="timeline">
+        <div class="timeline-cover">
+
+
+
+
+            {% for u in user_info %}
+
+          <!--Timeline Menu for Large Screens-->
+          <div class="timeline-nav-bar hidden-sm hidden-xs">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="profile-info">
+                  <img src="{{media_url}}{{u.profilepic}}" alt="" class="img-responsive profile-photo" />
+                  <h3>{{ u.user.first_name }} {{ u.user.last_name }}</h3>
+
+                </div>
+              </div>
+
+            </div>
+          </div><!--Timeline Menu for Large Screens End-->
+
+          <!--Timeline Menu for Small Screens-->
+          <div class="navbar-mobile hidden-lg hidden-md">
+            <div class="profile-info">
+              <img src="{{media_url}}{{u.profilepic}}" alt="" class="img-responsive profile-photo" />
+              <h4>{{ u.user.first_name }} {{ u.user.last_name }}</h4>
+            </div>
+            <div class="mobile-menu">
+              <ul class="list-inline">
+                <li><a href="timline.html">Timeline</a></li>
+                <li><a href="timeline-about.html" class="active">About</a></li>
+                <li><a href="timeline-album.html">Album</a></li>
+                <li><a href="timeline-friends.html">Friends</a></li>
+              </ul>
+              <button class="btn-primary">Add Friend</button>
+            </div>
+          </div><!--Timeline Menu for Small Screens End-->
+
+        </div>
+        <div id="page-contents">
+          <div class="row">
+            <div class="col-md-3">
+
+              <!--Edit Profile Menu-->
+{#              <ul class="edit-menu">#}
+{#              	<li class="active"><i class="icon ion-ios-information-outline"></i><a href="edit-profile-basic.html">Basic Information</a></li>#}
+{#              	<li><i class="icon ion-ios-briefcase-outline"></i><a href="edit-profile-work-edu.html">Education and Work</a></li>#}
+{#              	<li><i class="icon ion-ios-heart-outline"></i><a href="edit-profile-interests.html">My Interests</a></li>#}
+{#                <li><i class="icon ion-ios-settings"></i><a href="edit-profile-settings.html">Account Settings</a></li>#}
+{#              	<li><i class="icon ion-ios-locked-outline"></i><a href="edit-profile-password.html">Change Password</a></li>#}
+{#              </ul>#}
+            </div>
+            <div class="col-md-7">
+
+
+
+
+              <!-- Basic Information
+              ================================================= -->
+              <div class="edit-profile-container">
+                <div class="block-title">
+                  <h4 class="grey"><i class="icon ion-android-checkmark-circle"></i>Edit basic information</h4>
+
+                </div>
+                <div class="edit-block">
+                  <form name="basic-info" id="basic-info" class="form-inline" action="{% url 'socialapp:update_profile' %}" method="post">
+                    <div class="row">
+                      <div class="form-group col-xs-6">
+                        <label for="first_name">First name</label>
+                        <input id="first_name" class="form-control input-group-lg" type="text" name="first_name" title="Enter first name" placeholder="First name" value="{{ u.user.first_name }}" />
+                      </div>
+                      <div class="form-group col-xs-6">
+                        <label for="last_name" class="">Last name</label>
+                        <input id="last_name" class="form-control input-group-lg" type="text" name="last_name" title="Enter last name" placeholder="Last name" value="{{ u.user.last_name }}" />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="form-group col-xs-12">
+                        <label for="email">My email</label>
+                        <input id="email" class="form-control input-group-lg" type="text" name="email" title="Enter Email" placeholder="My Email" value="{{ u.user.email }}" />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <p class="custom-label"><strong>Date of Birth</strong></p>
+                      <div class="form-group col-sm-6 col-xs-12">
+                        <label for="dateofbirth" class="sr-only"></label>
+                            <input id="dob" class="form-control input-group-lg" type="text" name="dob" title="Enter Date of Birth" placeholder="Your Date of Birth" value="{{ u.dob|date:"Y-m-d" }}"/>
+                      </div>
+                    </div>
+                    <div class="form-group gender">
+                      <p class="custom-label"><strong>I am a: </strong></p>
+
+                        <input id="gender" class="form-control input-group-lg" type="text" name="gender" title="Enter Gender" placeholder="Your Gender" value="{{ u.gender }}"/>
+
+
+                    </div>
+                    <div class="row">
+                      <div class="form-group col-xs-6">
+                        <label for="city"> My city</label>
+                        <input id="city" class="form-control input-group-lg" type="text" name="city" title="Enter city" placeholder="Your city" value="{{ u.city }}"/>
+                      </div>
+                      <div class="form-group col-xs-6">
+                        <label for="country">My country</label>
+                        <input id="country" class="form-control input-group-lg" type="text" name="country" title="Enter country" placeholder="Your Country" value="{{ u.country }}"/>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="form-group col-xs-12">
+                        <label for="my-info">About me</label>
+                        <textarea id="about_text" name="about_text" class="form-control" placeholder="Some texts about me" rows="4" cols="400">{{ u.about_text }}</textarea>
+                      </div>
+                    </div>
+                      {% csrf_token %}
+                    <button class="btn btn-primary" type="submit">Save Changes</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+          {% endfor %}
+
+                    {% for message in messages %}
+
+                        <div class="alert alert-danger">
+                            <a class="close" href="#" data-dismiss="alert">×</a>
+
+                            {{ message }}
+
+                        </div>
+                    {% endfor %}
+
+
+      </div>
+    </div>
+{% include 'socialapp/footer.html' %}
+{% endblock %}

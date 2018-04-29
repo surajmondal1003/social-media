@@ -1,0 +1,104 @@
+{% extends 'socialapp/header.html' %}
+{% load staticfiles %}
+{% block body %}
+<div id="page-contents">
+    	<div class="container">
+    		<div class="row">
+
+          <!-- Newsfeed Common Side Bar Left
+          ================================================= -->
+                {%  include 'socialapp/leftsidebar.html'%}
+
+
+    			<div class="col-md-7">
+
+            <!-- Post Create Box
+            ================================================= -->
+                <form name="post-info" id="post-info" class="form-inline" action="{% url 'socialapp:create_post' %}" method="post" enctype="multipart/form-data">
+                    <div class="create-post">
+                        <div class="row">
+                            <div class="col-md-8 col-sm-8">
+                          <div class="form-group">
+                            <img src="{% static "images/users/user-1.jpg" %}" alt="" class="profile-photo-md" />
+                            <textarea name="post_text" id="post_text" cols="30" rows="1" class="form-control" placeholder="Write what you wish"></textarea>
+                          </div>
+                        </div>
+                            <div class="col-md-4 col-sm-4">
+                          <div class="tools">
+                            <ul class="publishing-tools list-inline">
+
+                              <li><i class="fa fa-picture-o"><input type="file" name="post_pic" id="post_pic"></i></li>
+
+                                <button class="btn btn-primary pull-right">Publish</button>
+
+                            </ul>
+
+                          </div>
+                        </div>
+                        </div>
+                    </div><!-- Post Create Box End-->
+                    {% csrf_token %}
+                </form>
+
+            <!-- Post Content
+            ================================================= -->
+
+
+                    {% for p in post_list %}
+
+
+                        <div class="post-content">
+              <img src="{{ media_url }}{{ p.post_pic }}" alt="post-image" class="img-responsive post-image" />
+              <div class="post-container">
+                <img src="{{ media_url }}{{ p.user.user_personal.profilepic }} " alt="user" class="profile-photo-md pull-left" />
+                <div class="post-detail">
+                  <div class="user-info">
+                    <h5><a href="timeline.html" class="profile-link">{{ p.user.first_name }} {{ p.user.last_name }}</a> <span class="following">following</span></h5>
+                    <p class="text-muted">{{ p.post_date }}</p>
+                  </div>
+                  <div class="reaction">
+                    <a class="btn text-green"><i class="icon ion-thumbsup"></i> 13</a>
+                    <a class="btn text-red"><i class="fa fa-thumbs-down"></i> 0</a>
+                  </div>
+                  <div class="line-divider"></div>
+                  <div class="post-text">
+                    <p>{{ p.post_text }} <i class="em em-anguished"></i> <i class="em em-anguished"></i> <i class="em em-anguished"></i></p>
+                  </div>
+                  <div class="line-divider"></div>
+                  <div class="post-comment">
+                    <img src="{% static "images/users/user-11.jpg" %}" alt="" class="profile-photo-sm" />
+                    <p><a href="timeline.html" class="profile-link">Diana </a><i class="em em-laughing"></i> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud </p>
+                  </div>
+                  <div class="post-comment">
+                    <img src="{% static "images/users/user-4.jpg" %}" alt="" class="profile-photo-sm" />
+                    <p><a href="timeline.html" class="profile-link">John</a> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud </p>
+                  </div>
+                  <div class="post-comment">
+                    <img src="{% static "images/users/user-1.jpg" %}" alt="" class="profile-photo-sm" />
+                    <input type="text" class="form-control" placeholder="Post a comment">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+                    {% endfor %}
+
+
+
+          </div>
+
+        {%  include 'socialapp/rightsidebar.html'%}
+
+    		</div>
+    	</div>
+    </div>
+
+
+{% include 'socialapp/footer.html' %}
+
+
+{% endblock %}
+
+
+
+

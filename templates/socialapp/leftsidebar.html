@@ -1,0 +1,35 @@
+{% load staticfiles %}
+<div class="col-md-3 static">
+            <div class="profile-card">
+            	<img src="{% static "images/users/user-1.jpg" %}" alt="user" class="profile-photo" />
+            	<h5><a href="timeline.html" class="text-white">Sarah Cruiz</a></h5>
+            	<a href="#" class="text-white"><i class="ion ion-android-person-add"></i> 1,299 followers</a>
+            </div><!--profile card ends-->
+            <ul class="nav-news-feed">
+              <li><i class="fa fa-newspaper-o"></i><div><a href="{% url 'socialapp:newsfeed' %}">My Newsfeed</a></div></li>
+              <li><i class="fa fa-users"></i><div><a href="{% url 'socialapp:newsfeed_friends' %}">Friends</a></div></li>
+              <li><i class="fa fa-bell"></i><div><a href="{% url 'socialapp:request_notifications' %}">Notifications</a></div></li>
+              <li><i class="fa fa-envelope"></i><div><a href="{% url 'socialapp:newsfeed_messages' %}">Messages</a></div></li>
+            </ul><!--news-feed links ends-->
+            <div id="chat-block">
+              <div class="title">Pending Requests</div>
+             <!-- Newsfeed Common Side Bar Right
+          ================================================= -->
+                    <div class="col-md-2 static">
+                        <div class="suggestions" id="sticky-sidebar">
+                            {% for user in pending_requests_list %}
+
+                                <div class="follow-user">
+                                    <img src="{{media_url}}{{user.profilepic}}" alt="" class="profile-photo-sm pull-left" />
+                                        <div>
+                                            <h5><a href="/see_other_profile/{{ user.request_user_id }}">{{ user.first_name }}</a></h5>
+                                              <hr>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                    </div>
+            </div><!--chat block ends-->
+          </div>
+
+{% block body %}{% endblock %}

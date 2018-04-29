@@ -1,0 +1,25 @@
+
+{% load staticfiles %}
+
+<!-- Newsfeed Common Side Bar Right
+          ================================================= -->
+<div class="col-md-2 static">
+    <div class="suggestions" id="sticky-sidebar">
+        <h4 class="grey">Who to Follow</h4>
+
+        {% for user in user_list %}
+
+            <div class="follow-user">
+                <img src="{{media_url}}{{user.profilepic}}" alt="" class="profile-photo-sm pull-left" />
+                    <div>
+                        <h5><a href="/see_other_profile/{{ user.id }}">{{ user.first_name }}</a></h5>
+                          <a href="/add_friend/{{ user.id }}" id="addfriend" name="addfriend" class="text-green">Add friend</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+</div>
+
+
+
+{% block body %}{% endblock %}
