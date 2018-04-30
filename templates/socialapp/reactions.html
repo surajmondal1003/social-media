@@ -1,0 +1,7 @@
+
+{% for p in get_post %}
+    <div class="reaction">
+    <a class="btn text-green" href="like_post/{{ p.id }}" id="like_post" onclick="like_posts({{ p.id }})"><i class="icon fa fa-thumbs-up"></i>{{ p.likes }}</a>
+    <a class="btn text-red"><i class="fa fa-thumbs-down"></i> 0</a>
+  </div>
+{% endfor %}

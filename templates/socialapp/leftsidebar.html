@@ -1,10 +1,16 @@
 {% load staticfiles %}
 <div class="col-md-3 static">
+
+            {% for u in user_info %}
             <div class="profile-card">
-            	<img src="{% static "images/users/user-1.jpg" %}" alt="user" class="profile-photo" />
-            	<h5><a href="timeline.html" class="text-white">Sarah Cruiz</a></h5>
-            	<a href="#" class="text-white"><i class="ion ion-android-person-add"></i> 1,299 followers</a>
+            	<img src="{{ media_url }}{{ u.profilepic }}" alt="user" class="profile-photo" />
+            	<h5><a href="{% url 'socialapp:timeline_about' %}" class="text-white">{{ u.user.first_name }} {{ u.user.last_name }}</a></h5>
+{#            	<a href="#" class="text-white"><i class="ion ion-android-person-add"></i> </a>#}
             </div><!--profile card ends-->
+            {% endfor %}
+
+
+
             <ul class="nav-news-feed">
               <li><i class="fa fa-newspaper-o"></i><div><a href="{% url 'socialapp:newsfeed' %}">My Newsfeed</a></div></li>
               <li><i class="fa fa-users"></i><div><a href="{% url 'socialapp:newsfeed_friends' %}">Friends</a></div></li>
@@ -20,9 +26,9 @@
                             {% for user in pending_requests_list %}
 
                                 <div class="follow-user">
-                                    <img src="{{media_url}}{{user.profilepic}}" alt="" class="profile-photo-sm pull-left" />
+                                    <img src="{{media_url}}{{user.request_user.user_personal.profilepic}}" alt="" class="profile-photo-sm pull-left" />
                                         <div>
-                                            <h5><a href="/see_other_profile/{{ user.request_user_id }}">{{ user.first_name }}</a></h5>
+                                            <h5><a href="/see_other_profile/{{ user.request_user_id }}">{{ user.request_user.first_name }}</a></h5>
                                               <hr>
                                             </div>
                                         </div>

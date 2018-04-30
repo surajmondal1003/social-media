@@ -72,11 +72,31 @@
 
 <script>
 
-{#        $("#addfriend").click( function() {#}
-{##}
-{#                alert("You clicked the button using JQuery!");#}
-{##}
-{#        });#}
+        function like_posts(id) {
+
+            //alert(id);
+            $.ajax({
+                url: $(this).attr("href"),
+                type: "POST",
+                data: {id : id},
+                success: function(response){
+
+                //$('#reaction').html(response);
+                    //alert(response);
+
+                }
+
+
+
+            });
+
+        }
+
+
+
+
+
+
 
 
 

@@ -23,6 +23,7 @@ urlpatterns = [
     path('accept_friend/<id_request>/<id_user>',views.accept_friend,name='accept_friend'),
     path('request_notifications',views.request_notifications,name='request_notifications'),
     path('create_post',views.create_post,name='create_post'),
+    path('like_post/<post_id>',views.like_post,name='like_post'),
     path('404',views.notfound404,name='404'),
 
 

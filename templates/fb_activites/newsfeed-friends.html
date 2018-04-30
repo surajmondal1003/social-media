@@ -52,10 +52,10 @@
                   <div class="friend-card">
                   	<img src="{% static "images/covers/5.jpg" %}" alt="profile-cover" class="img-responsive cover" />
                   	<div class="card-info">
-                      <img src="{{media_url}}{{f.profilepic}}" alt="user" class="profile-photo-lg" />
+                      <img src="{{media_url}}{{f.friend.user_personal.profilepic}}" alt="user" class="profile-photo-lg" />
                       <div class="friend-info">
                         <a href="#" class="pull-right text-green">My Friend</a>
-                      	<h5><a href="/see_other_profile/{{ f.friend_id }}" class="profile-link">{{ f.first_name }} {{ f.last_name }}</a></h5>
+                      	<h5><a href="/see_other_profile/{{ f.friend_id }}" class="profile-link">{{ f.friend.first_name }} {{ f.friend.last_name }}</a></h5>
 
                       </div>
                     </div>

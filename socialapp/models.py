@@ -54,7 +54,18 @@ class Post(models.Model):
     post_text=models.TextField()
     post_pic=models.ImageField(upload_to='post_pics',blank=True)
     post_date = models.DateTimeField(default=timezone.now())
+    likes=models.IntegerField(default=0)
 
     def __str__(self):
         return self.user.username
+
+
+class Comment(models.Model):
+    post=models.ForeignKey(Post,on_delete=models.CASCADE,related_name='post_id')
+    user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='comment_user_id')
+    comment_text=models.TextField(blank=True)
+
+    def __str__(self):
+        return self.user.username
+
 

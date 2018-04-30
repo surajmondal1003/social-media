@@ -7,7 +7,12 @@
 
           <!-- Newsfeed Common Side Bar Left
           ================================================= -->
+
+
+
+
                 {%  include 'socialapp/leftsidebar.html'%}
+
 
 
     			<div class="col-md-7">
@@ -19,15 +24,15 @@
                         <div class="row">
                             <div class="col-md-8 col-sm-8">
                           <div class="form-group">
-                            <img src="{% static "images/users/user-1.jpg" %}" alt="" class="profile-photo-md" />
-                            <textarea name="post_text" id="post_text" cols="30" rows="1" class="form-control" placeholder="Write what you wish"></textarea>
+
+                            <textarea name="post_text" id="post_text" cols="38" rows="1" class="form-control" placeholder="Write what you wish"></textarea>
                           </div>
                         </div>
                             <div class="col-md-4 col-sm-4">
                           <div class="tools">
                             <ul class="publishing-tools list-inline">
 
-                              <li><i class="fa fa-picture-o"><input type="file" name="post_pic" id="post_pic"></i></li>
+                              <li class="img-upload"><i class="fa fa-picture-o"><input type="file" name="post_pic" id="post_pic"></i></li>
 
                                 <button class="btn btn-primary pull-right">Publish</button>
 
@@ -44,6 +49,8 @@
             ================================================= -->
 
 
+
+
                     {% for p in post_list %}
 
 
@@ -56,8 +63,8 @@
                     <h5><a href="timeline.html" class="profile-link">{{ p.user.first_name }} {{ p.user.last_name }}</a> <span class="following">following</span></h5>
                     <p class="text-muted">{{ p.post_date }}</p>
                   </div>
-                  <div class="reaction">
-                    <a class="btn text-green"><i class="icon ion-thumbsup"></i> 13</a>
+                  <div class="reaction" id="reaction">
+                    <a class="btn text-green" href="like_post/{{ p.id }}" id="like_post" onclick="like_posts({{ p.id }})"><i class="icon fa fa-thumbs-up"></i>{{ p.likes }}</a>
                     <a class="btn text-red"><i class="fa fa-thumbs-down"></i> 0</a>
                   </div>
                   <div class="line-divider"></div>
@@ -65,6 +72,8 @@
                     <p>{{ p.post_text }} <i class="em em-anguished"></i> <i class="em em-anguished"></i> <i class="em em-anguished"></i></p>
                   </div>
                   <div class="line-divider"></div>
+
+
                   <div class="post-comment">
                     <img src="{% static "images/users/user-11.jpg" %}" alt="" class="profile-photo-sm" />
                     <p><a href="timeline.html" class="profile-link">Diana </a><i class="em em-laughing"></i> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud </p>
@@ -82,8 +91,6 @@
             </div>
 
                     {% endfor %}
-
-
 
           </div>
 

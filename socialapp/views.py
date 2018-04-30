@@ -2,13 +2,15 @@ from django.shortcuts import render
 from django.http import HttpResponse,HttpResponseRedirect
 from socialapp.forms import UserForm,PersonalInfoForm
 from django.contrib.auth.models import User
-from socialapp.models import User_Personal,Request,Friends,Post
+from socialapp.models import User_Personal,Request,Friends,Post,Comment
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.db.models import Q
+from django.db.models import Count
+from django.http import JsonResponse
 
 
 
@@ -21,25 +23,45 @@ def index(request):
 
 
 def get_all_users(request):
-    #user_list = User.objects.all().exclude(pk=request.session['id'])
 
-    user_list = User.objects.raw('SELECT s.profilepic,u.id,u.first_name from auth_user as u ' 
-                                'LEFT JOIN socialapp_user_personal s on s.user_id=u.id '
-                                'LEFT JOIN socialapp_request r ON r.request_user_id=u.id '
-                                'WHERE u.id NOT IN(SELECT friend_id FROM socialapp_friends WHERE user_id='+str(request.session['id'])+') AND u.id!='+str(request.session['id'])+'')
+
+    # user_list = User.objects.raw('SELECT s.profilepic,u.id,u.first_name from auth_user as u '
+    #                             'LEFT JOIN socialapp_user_personal s on s.user_id=u.id '
+    #                             'LEFT JOIN socialapp_request r ON r.request_user_id=u.id '
+    #                             'WHERE u.id NOT IN(SELECT friend_id FROM socialapp_friends WHERE user_id='+str(request.session['id'])+') '
+    #                             'AND u.id NOT IN(SELECT user_id FROM socialapp_request WHERE  request_status=0 AND request_user_id='+str(request.session['id'])+') '
+    #                             'AND u.id NOT IN(SELECT request_user_id FROM socialapp_request WHERE  request_status=0 AND user_id='+str(request.session['id'])+') '
+    #                             'AND u.id!='+str(request.session['id'])+'')
+
+    user_list = User_Personal.objects.filter(~Q(user_id=request.user),~Q(user__friend_id__user_id=request.user))
 
     return user_list
 
 
 def get_allpending_requests(request):
-    #user_list = User.objects.all().exclude(pk=request.session['id'])
+    user_list = Request.objects.filter(user_id=request.user,request_status=False)
 
-    user_list = User.objects.raw('SELECT r.id,s.profilepic,u.first_name,u.last_name,r.request_user_id  FROM socialapp_request as r'
-		' LEFT JOIN auth_user u ON u.id=r.request_user_id'
-        ' LEFT JOIN socialapp_user_personal s on s.id=r.request_user_id' 
-        ' WHERE  r.request_status=0 AND r.user_id='+str(request.session['id'])+'')
+    # user_list = User.objects.raw('SELECT r.id,s.profilepic,u.first_name,u.last_name,r.request_user_id  FROM socialapp_request as r'
+		# ' LEFT JOIN auth_user u ON u.id=r.request_user_id'
+    #     ' LEFT JOIN socialapp_user_personal s on s.id=r.request_user_id'
+    #     ' WHERE  r.request_status=0 AND r.user_id='+str(request.session['id'])+'')
+
 
     return user_list
+
+
+
+def request_notifications(request):
+
+    # user_list = Request.objects.raw('SELECT r.id,s.profilepic,u.first_name,u.last_name,r.user_id FROM socialapp_request as r'
+    #                              ' LEFT JOIN auth_user u ON u.id=r.user_id'
+    #                              ' LEFT JOIN socialapp_user_personal s on s.id=r.user_id'
+    #                              ' WHERE  r.request_status=0 AND r.request_user_id=' + str(request.session['id']) + '')
+
+    user_list = Request.objects.filter(request_user_id=request.user, request_status=False)
+
+    return render(request, 'fb_activites/newsfeed-accept-request.html',{'user_list':user_list,'media_url':settings.MEDIA_URL})
+
 
 
 def get_userdetails(request):
@@ -119,22 +141,25 @@ def newsfeed(request):
     pending_requests_list=get_allpending_requests(request)
 
     post_list=get_allposts(request)
+    user_info=get_userdetails(request)
 
 
-    user_dict = {'user_list': user_list,'pending_requests_list':pending_requests_list,'post_list':post_list,'media_url':settings.MEDIA_URL}
+
+    user_dict = {'user_info':user_info,'user_list': user_list,
+                 'pending_requests_list':pending_requests_list,
+                 'post_list':post_list,'media_url':settings.MEDIA_URL}
 
     return render(request, 'fb_activites/newsfeed.html',context=user_dict)
 
 def newsfeed_friends(request):
 
-    #friends_list = Request.objects.filter(user=request.session['id'],request_status=True)
-    friends_list = Friends.objects.raw('SELECT * FROM socialapp_friends as f'
-		                                ' LEFT JOIN auth_user u ON u.id=f.friend_id'
-                                        ' LEFT JOIN socialapp_user_personal s on s.id=f.friend_id' 
-                                        ' WHERE  f.user_id='+str(request.session['id'])+'')
 
-    #friends_list=Friends.objects.filter(user=request.session['id']).select_related()
+    # #friends_list = Friends.objects.raw('SELECT * FROM socialapp_friends as f'
+		#                                 ' LEFT JOIN auth_user u ON u.id=f.friend_id'
+    #                                     ' LEFT JOIN socialapp_user_personal s on s.id=f.friend_id'
+    #                                     ' WHERE  f.user_id='+str(request.session['id'])+'')
 
+    friends_list=Friends.objects.filter(user=request.user)
 
 
     return render(request, 'fb_activites/newsfeed-friends.html',{
@@ -164,7 +189,6 @@ def see_other_profile(request,id_user):
 def edit_profile_basic(request):
     user_info = get_userdetails(request)
 
-    #update_from=ProfileUpdateForm(instance=user_info)
 
     return render(request, 'profile/edit-profile-basic.html',{'user_info':user_info,'media_url':settings.MEDIA_URL})
 
@@ -213,20 +237,20 @@ def notfound404(request):
 
 def add_friend(request,id_user):
 
-    #print(request.session['id'])
+
     requests_get=Request()
     requests_get.user_id=request.session['id']
     requests_get.request_user_id=id_user
     requests_get.save()
 
-    #Request.objects.raw('INSERT INTO socialapp_request SET user_id='+str(request.session['id'])+',requset_user_id='+id_user+'')
+
     return HttpResponseRedirect(reverse('socialapp:newsfeed'))
 
 
 
 def accept_friend(request,id_request,id_user):
 
-    #print(request.session['id'])
+
     requests_get=Request.objects.get(pk=id_request)
     friend_user=User.objects.get(pk=id_user)
 
@@ -243,19 +267,9 @@ def accept_friend(request,id_request,id_user):
     friend.friend=request.user
     friend.save()
 
-    #Request.objects.raw('INSERT INTO socialapp_request SET user_id='+str(request.session['id'])+',requset_user_id='+id_user+'')
+
     return HttpResponseRedirect(reverse('socialapp:newsfeed'))
 
-
-def request_notifications(request):
-    user_list = Request.objects.raw('SELECT r.id,s.profilepic,u.first_name,u.last_name,r.user_id FROM socialapp_request as r'
-                                 ' LEFT JOIN auth_user u ON u.id=r.user_id'
-                                 ' LEFT JOIN socialapp_user_personal s on s.id=r.user_id'
-                                 ' WHERE  r.request_status=0 AND r.request_user_id=' + str(request.session['id']) + '')
-
-
-
-    return render(request, 'fb_activites/newsfeed-accept-request.html',{'user_list':user_list,'media_url':settings.MEDIA_URL})
 
 
 def create_post(request):
@@ -267,8 +281,9 @@ def create_post(request):
         post_text = request.POST.get('post_text')
         post_info.user=user
         post_info.post_text=post_text
+        post_info.save()
 
-        print(request.FILES)
+        #print(request.FILES)
 
 
         if 'post_pic' in request.FILES:
@@ -285,9 +300,36 @@ def create_post(request):
 
 def get_allposts(request):
 
-    post_list=Post.objects.filter(user=str(request.session['id'])).order_by('-post_date')
+
+
+    post_list=Post.objects.raw('SELECT * FROM socialapp_post as p'
+                                ' LEFT JOIN auth_user u ON u.id=p.user_id'
+                                ' LEFT JOIN socialapp_user_personal s ON s.id=p.user_id'
+                               ' WHERE p.user_id='+str(request.session['id'])+''
+                               ' OR p.user_id IN(SELECT friend_id FROM socialapp_friends WHERE user_id='+str(request.session['id'])+') ORDER BY p.post_date DESC')
+
+
+    #post_list = Post.objects.filter(Q(user_id=request.user)|Q(user__friend_id__user=request.user)).order_by('-post_date')
 
 
     return post_list
+
+
+
+
+def like_post(request,post_id):
+    get_post = Post.objects.get(pk=post_id)
+    get_post.likes+=1
+
+    get_post.save()
+
+
+    return HttpResponseRedirect(reverse('socialapp:newsfeed'))
+
+
+def get_all_comments():
+
+    get_comments=Comment.objects.filter()
+
 
 

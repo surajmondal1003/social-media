@@ -2672,3 +2672,14 @@ ul.contact li i{
   top: 50%;
   transform: translateY(-50%);
 }
+#post_pic {
+    position: relative;
+    opacity: 0;
+    width: 100%;
+    top: 5px;
+    position: absolute;
+    left: -37px;
+}
+.img-upload i { font-size: 25px;
+margin-left: -37px;
+color: #27aae1;  }
